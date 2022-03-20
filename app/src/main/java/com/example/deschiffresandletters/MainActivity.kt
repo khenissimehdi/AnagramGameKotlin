@@ -10,7 +10,6 @@ import android.widget.TextView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
-
 class MainActivity : AppCompatActivity() {
     private val letterPicker by lazy { LetterPicker.buildFromResource(this, R.raw.letter_frequencies) }
     private val drawTextView by lazy { findViewById<TextView>(R.id.textView2) }
@@ -22,13 +21,21 @@ class MainActivity : AppCompatActivity() {
     private var bestAnagrams = listOf<String>()
     private val button by lazy { findViewById<Button>(R.id.button2) }
     private val mDefaultInputType = -1
+    private var dic: Dictionary = emptyList()
+    private var resultList = emptySet<String>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        dic = loadDictionary("french_dict.txt")
         "Click on the button to launch the game".also { drawTextView.text = it }
-        pickedWorkd = letterPicker.pickLetters(9)
+        pickedWorkd = letterPicker.pickLetters(3)
+        var anagramFinder = AnagramFinder(dic)
+        resultList = anagramFinder.findBestAnagrams(pickedWorkd, 1)
+
         drawTextView.text = pickedWorkd
         button.setText("Submit")
+
 
         attachingListeners()
     }
@@ -36,7 +43,7 @@ class MainActivity : AppCompatActivity() {
 
     fun attachingListeners() {
         editTextInput.afterTextChanged { word ->
-            if (!(pickedWorkd.containsAnagram(word))) {
+            if (!( (pickedWorkd.containsAnagram(word))) ) {
                 setErrorCondition(button, errorLayout, "Enter a word contained in the anagram")
             } else {
                 typedWord = word
@@ -45,7 +52,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         button.setOnClickListener {
-            if (bestAnagrams.isEmpty()) {
+            if(!typedWord.containsLegalAnagram(typedWord, dic)) {
+                errorLayout.error = "In French please !"
+            }
+
+            else if (bestAnagrams.isEmpty()) {
                 bestAnagrams  = listOf(typedWord)
             } else {
                 if (typedWord.length > bestAnagrams[0].length) {
@@ -56,6 +67,11 @@ class MainActivity : AppCompatActivity() {
             }
 
             resultText.setText(bestAnagrams.toCustomString())
+            if(resultList.contains(typedWord)) {
+                toast("You win !")
+            }
+
+
         }
     }
 

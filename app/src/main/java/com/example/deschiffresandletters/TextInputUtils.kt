@@ -1,8 +1,11 @@
 package com.example.deschiffresandletters
 
+import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Gravity
 import android.widget.EditText
+import android.widget.Toast
 
 
 fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
@@ -17,3 +20,11 @@ fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
 
     })
 }
+
+fun String.containsLegalAnagram(proposition: String, dictionary: Dictionary): Boolean =
+    this.containsAnagram(proposition) && dictionary.binarySearch(proposition) >= 0
+
+
+fun Context.toast(message: CharSequence) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+
+

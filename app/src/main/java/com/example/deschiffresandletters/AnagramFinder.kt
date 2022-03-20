@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import java.util.*
 
-typealias Dictionary = List<String>
 typealias AnagramClasses = Map<String, String>
 
 
