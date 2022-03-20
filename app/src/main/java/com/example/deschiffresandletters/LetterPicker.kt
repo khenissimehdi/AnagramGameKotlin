@@ -42,3 +42,7 @@ class LetterPicker(frequencyTable: Map<Char, Int>) {
     }
 }
 
+fun List<String>.toCustomString(): String {
+    return this.joinToString(separator = ", ")
+}
+

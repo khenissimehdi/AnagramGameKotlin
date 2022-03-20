@@ -14,10 +14,11 @@ import com.google.android.material.textfield.TextInputLayout
 class MainActivity : AppCompatActivity() {
     private val letterPicker by lazy { LetterPicker.buildFromResource(this, R.raw.letter_frequencies) }
     private val drawTextView by lazy { findViewById<TextView>(R.id.textView2) }
-    //val resultText by lazy { findViewById<TextView>(R.id.textView) }
+    val resultText by lazy { findViewById<TextView>(R.id.textView) }
     private val errorLayout by lazy { findViewById<TextInputLayout>(R.id.textInput) }
     private val editTextInput by lazy {findViewById<TextInputEditText>(R.id.editTexts)}
     private var pickedWorkd: String = ""
+    private var typedWord: String = ""
     private var bestAnagrams = listOf<String>()
     private val button by lazy { findViewById<Button>(R.id.button2) }
     private val mDefaultInputType = -1
@@ -38,16 +39,25 @@ class MainActivity : AppCompatActivity() {
             if (!(pickedWorkd.containsAnagram(word))) {
                 setErrorCondition(button, errorLayout, "Enter a word contained in the anagram")
             } else {
+                typedWord = word
                 setNonErrorCondition(editTextInput, errorLayout, InputType.TYPE_CLASS_TEXT)
             }
         }
 
         button.setOnClickListener {
+            if (bestAnagrams.isEmpty()) {
+                bestAnagrams  = listOf(typedWord)
+            } else {
+                if (typedWord.length > bestAnagrams[0].length) {
+                    bestAnagrams  = listOf(typedWord)
+                } else if(typedWord.length == bestAnagrams[0].length) {
+                    bestAnagrams = bestAnagrams + listOf(typedWord)
+                }
+            }
 
-
+            resultText.setText(bestAnagrams.toCustomString())
         }
     }
-
 
     /**
      * Common error condition for entry fields. Disables next entry field.
